@@ -1,0 +1,230 @@
+
+var analyser,CubeGrid; //global variabals
+function setup(){
+	var canvas=  createCanvas(200,200);
+		 background(0);
+		 //drag and drop function [6]
+		 canvas.drop(gotFile);
+ 
+	 }
+ function gotFile(file){
+	 createP(file.name+ " " +file.size);
+ }     
+
+function init() {
+	
+    var audioLoader;// global variables in this function 
+    var scene = new THREE.Scene();
+    var gui= new dat.GUI();
+// create an AudioListener and add it to the camera
+var listener = new THREE.AudioListener();
+// create a global audio source
+var sound = new THREE.Audio( listener );
+	var enableFog = false;
+    
+    if (enableFog){
+        scene.fog= new THREE.FogExp2(0xffffff, 0.2); // colour of the fog / the intensity of the fog
+    }
+
+    var plane = getPlane(30);
+	var pointLight = getPointLight(1);
+    var sphere = getSphere(0.05);
+	 CubeGrid= getCubeGrid(10,1.5);
+	plane.name = 'plane-1';
+    
+    plane.rotation.x = Math.PI/2;
+    pointLight.position.y = 2;
+    pointLight.intensity=2;
+
+	gui.add(pointLight, 'intensity',0 ,10); // the object I want to control and the property names 
+	//that I want to control and optionaly I can specify the min and max value of the property
+    gui.add(pointLight.position,'y',0,5);
+    scene.add(plane);
+    pointLight.add(sphere);
+    scene.add(pointLight);
+	scene.add(CubeGrid);
+	scene.add(listener);
+
+	var camera = new THREE.PerspectiveCamera(
+		45,
+		window.innerWidth/window.innerHeight,
+		1,
+		1000
+	);
+
+	camera.position.x = 1;
+	camera.position.y = 2;
+	camera.position.z = 5;
+
+	camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+	var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor('rgb(120,120,120)'); // the rgb colour value
+	document.getElementById('webgl').appendChild(renderer.domElement);
+	document.getElementById('playButton'); // not working 
+    
+	var controls= new THREE.OrbitControls(camera, renderer.domElement);
+	
+	// load a sound and set it as the Audio object's buffer  [5] and [7]
+ audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'sounds/song.mp3', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 0.5 );
+	sound.play();
+});
+// create an AudioAnalyser, passing in the sound and desired fftSize
+analyser = new THREE.AudioAnalyser( sound, 32 );
+
+
+	update(renderer, scene, camera,controls); //calling the update function
+    return scene;
+}
+
+function getCube(w, h, d) {
+	var min = 64;
+	var max = 224;
+	var geometry = new THREE.CubeGeometry(w, h, d);
+	for (var i = 0; i < geometry.faces.length; i++) {
+		var face = geometry.faces[i];
+	face.color.setHex((Math.floor(Math.random() * (max - min + 1)) + min) ); // random shades of blue or green [* 65536] // .setHex ( hex : Integer ) : Color
+		
+	  }
+	
+    var material= new THREE.MeshPhongMaterial({
+		wireframe: false, // set to false for solid block 
+        vertexColors: THREE.FaceColors, // rondom colors    Inspiration [4]
+		//gui.add(face, 0xffffff,0xffd700); I would like the user to be able to change the colours of the cubes 
+		specular: 0xdddddd,
+		shininess:10,
+		reflectivity:5.5
+
+	});
+
+	var mesh = new THREE.Mesh(
+		geometry,
+		material 
+	);
+	mesh.castShadow= true; // receiving shadow 
+//	mesh.add(sound);
+	return mesh;
+}
+
+function getCubeGrid(amount, separationMultiplier) {
+	var group= new THREE.Group();
+
+	for(var i=0; i<amount; i++){ // for loop of  boxes
+		var obj= getCube(1,1,1);
+		obj.position.x=i* separationMultiplier;  // position of the boxes
+		obj.position.y=obj.geometry.parameters.height/2;
+		group.add(obj);
+		for (var j=1; j< amount; j++){ // for loop for the number of the boxers 
+			var obj=getCube(1,1,1);
+			//obj.position = new THREE.Vector3(x, y, 0);
+			obj.position.x= i* separationMultiplier;
+			obj.position.y=obj.geometry.parameters.height/2;
+			obj.position.z= j* separationMultiplier;
+			group.add(obj);
+		}
+	}
+	group.position.x= -(separationMultiplier*(amount-1))/2;
+	group.position.z= - (separationMultiplier*(amount-1))/2;
+	return group;
+}
+function getPlane(size) {
+	var geometry = new THREE.PlaneGeometry(size, size);
+	var material = new THREE.MeshPhongMaterial({
+		// map: new THREE.TextureLoader().load("addons/fair.jpg"),
+    	// side: THREE.DoubleSide // both sides of the sphere
+		color:'rgb(120,120,120)',
+	});
+	var mesh = new THREE.Mesh(
+		geometry,
+		material 
+    );
+	mesh.receiveShadow= true;
+
+	return mesh;
+}
+// create a sphere with material, texture 
+function getSphere(size) { // readius
+	var geometry = new THREE.SphereGeometry(size, 50, 50,); // radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
+	/* 
+	
+
+	
+// get the average frequency of the sound
+var data = analyser.getAverageFrequency();
+
+
+     radius — sphere radius. Default is 1.
+widthSegments — number of horizontal segments. Minimum value is 3, and the default is 8.
+heightSegments — number of vertical segments. Minimum value is 2, and the default is 6.
+phiStart — specify horizontal starting angle. Default is 0.
+phiLength — specify horizontal sweep angle size. Default is Math.PI * 2.
+thetaStart — specify vertical starting angle. Default is 0.
+thetaLength — specify vertical sweep angle size. Default is Math.PI.
+
+The geometry is created by sweeping and calculating vertexes around the Y axis 
+(horizontal sweep) and the Z axis (vertical sweep). Thus, incomplete spheres 
+(akin to 'sphere slices') can be created through the use of different values 
+of phiStart, phiLength, thetaStart and thetaLength, in order to define the 
+points in which we start (or end) calculating those vertices. 
+Ref: https://threejs.org/docs/#api/en/geometries/SphereGeometry
+    */
+    var material= new THREE.MeshLambertMaterial({
+        map: new THREE.TextureLoader().load("addons/night.jpg"), //[2.2]
+
+        
+    });
+	var mesh = new THREE.Mesh(
+		geometry,
+		material 
+	);
+	return mesh;
+}
+function getPointLight(intensity){
+var light= new THREE.PointLight(0xffffff, intensity); // 2 arguments-colour of the light and the intensity
+light.castShadow= true;
+return light;
+}
+
+ function update (renderer, scene, camera, controls){ 
+	// get the average frequency of the sound (FFT)
+var data = analyser.getAverageFrequency();
+	CubeGrid.scale.y = data/10;
+	
+requestAnimationFrame(function() { //request animation frame 
+	update(renderer, scene, camera, controls);
+})
+controls.update();
+renderer.render(
+	scene,
+	camera
+);
+ }
+ //Load background texture [2.1]
+ new THREE.TextureLoader().load('https://images.pexels.com/photos/1205301/pexels-photo-1205301.jpeg' , function(texture)
+            {
+             scene.background = texture;  
+			});
+			
+var scene = init();
+// I want them to move like this https://srchea.com/apps/sound-visualizer-web-audio-api-webgl/ 
+// console.log(THREE);
+
+/* 
+References(code/texture and inspirations):
+[1] inspiration for the movement of the boxes : https://srchea.com/apps/sound-visualizer-web-audio-api-webgl/
+[2]Texture:
+[2.1] background image : https://images.pexels.com/photos/1205301/pexels-photo-1205301.jpeg
+[2.2] sphere: http://www.shadedrelief.com/natural3/pages/textures.html 
+
+[3] Debugging the Shpere https://threejs.org/docs/#api/en/geometries/SphereGeometry
+[4] Inspiration  for rondom colours : https://jsfiddle.net/tyweiss84/0g7z4fv7/ 
+[5] Load a sound and set it as the Audio object's buffer   ref:https://threejs.org/docs/#api/en/audio/Audio
+[6] Drag and drop function  Ref: https://www.youtube.com/watch?v=o4UmGrPst_c
+[7] SONG : 
+
+*/

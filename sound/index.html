@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Ifka's Sound visualisation</title>
+  <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Srisakdi" rel="stylesheet">
+
+  <!-- load font -->
+  <style>
+      
+    html, body {
+    margin: 0;
+    padding:0;
+    font-family: arial;
+    background:#000;
+    color: #fefefe;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+#dropzone{
+      padding:4px; /*pixels*/
+      /* border-style: dashed; */
+      font-size: 9pt;  /*points*/
+      width: 10%;   /*percent*/
+    }
+#playButton{
+    color:rgb(219, 130, 27);
+}
+#controlPanel {
+    width: 200px;
+    height: 200px;
+    padding: 5px;
+    position: absolute;
+    top: 60px;
+    left: -1px;
+    box-shadow: 0 0 30px #555;
+    background-color: rgba(35, 48, 42, 0.8);
+    transition: all 0.5s ease-in-out;
+
+}
+#info {
+    position: absolute;
+    top: 0;
+    height: 20px;
+}
+#logo {
+  text-align: right;
+  font-family: 'Srisakdi', cursive;
+  position:absolute;
+  top: 20pt; 
+  left: 29pt;
+  color:whitesmoke;
+  size: 200px;
+
+  
+}
+#action {
+    position: absolute;
+    right: 0;
+    width: 20px;
+    top: 0;
+    background: #111;
+    height: 130px;
+    padding-top: 80px;
+    cursor: pointer;
+}
+a{
+  color: greenyellow;
+}
+#action: hover {
+    color: #ddd;
+    background: #333;
+}
+#upload {
+    width: 180px;
+}
+    </style>
+</head>
+<body>
+  <!-- <audio id="myAudio" src="sounds/song.mp3"></audio> -->
+      <!-- the container for the visualisation  and the control panel-->
+  <div id="webgl"></div>
+  <div id="info">Visualisation with Three.js</div>
+  <div id="logo">    Ifka</div>
+  <div id="controlPanel">
+      <a href="javascript:void(0);" id="playButton">Play Sample</a> <!-- You may ocassionally encounter an HTML document that uses href="JavaScript:Void(0);" within an <a> element. JavaScript void is often used when, inserting an expression into a web page may produce an unwanted side-effect.  -->
+      <p id="dropzone text-center">or upload a file</p>
+      <input type="file" id="upload" />
+      <p>or drag and drop a file to play</p>
+  <script  language="javascript" type="text/javascript" src="addons/p5.min.js"></script>
+    <!-- <script language="javascript" type="text/javascript"  src="addons/p5.dom.min.js"></script>
+    <script language="javascript" type="text/javascript"  src="addons/p5.sound.min.js"></script> -->
+    <script language="javascript" type="text/javascript" src="addons/dat.gui.min.js"></script>
+    <script language="javascript" type="text/javascript" src="addons/three.js"></script>
+    <script language="javascript" type="text/javascript" src="addons/TrackballControls.js"></script> <!-- for the rotation of the planet -->
+    
+  
+   <!-- <script language="javascript" type="text/javascript" src="addons/ObjectLoader.js"></script> -->
+   <script language="javascript" type="text/javascript" src="addons/OrbitControls.js"></script>
+   <!-- <script language="javascript" type="text/javascript" src="addons/JSONLoader.js"></script> -->
+    <!--<script language="javascript" type="text/javascript" src="addons/three.min.js"></script>-->
+    <!-- <script language="javascript" type="text/javascript" src="addons/three.module.js"></script> -->
+
+
+    <!-- <script src="audio.js"></script> link to mine  JavaScript file -->
+
+  <script src="main.js"></script> link to mine  JavaScript file
+  <!-- <p id="dropzone">
+    Drag your file here
+  </p> -->
+  
+</body>
+</html>
