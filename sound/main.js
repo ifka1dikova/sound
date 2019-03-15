@@ -1,210 +1,209 @@
-
 // pushing using GitKraken
-var analyser,CubeGrid; //global variabals
+var analyser, CubeGrid; //global variabals
 var audioLoader;
-const HIGHLIGHT_COLORS = [0x4200ff, 0x00ffff, 0xff0000, 0xff00ff]; // ref: https://github.com/dominikhofacker/Web-GL-Audio-Visualizer/blob/master/src/audiovisualisierung.js
+//const HIGHLIGHT_COLORS = [0x4200ff, 0x00ffff, 0xff0000, 0xff00ff]; // ref: https://github.com/dominikhofacker/Web-GL-Audio-Visualizer/blob/master/src/audiovisualisierung.js
 
-function setup(){
-	var canvas=  createCanvas(200,200);
-		 background(0);
-		 //drag and drop function [6]
-		 canvas.drop(gotFile);
- 
-	 }
- function gotFile(file){
-	 createP(file.name+ " " +file.size);
- }     
+function setup() {
+    var canvas = createCanvas(200, 200);
+    background(0);
+    //drag and drop function [6]
+    canvas.drop(gotFile);
+
+}
+
+function gotFile(file) {
+    createP(file.name + " " + file.size);
+}
 
 function init() {
+    /* create  a scene */
     var scene = new THREE.Scene();
-    var gui= new dat.GUI();
-// create an AudioListener and add it to the camera
-var listener = new THREE.AudioListener();
-// create a global audio source
-var sound = new THREE.Audio( listener );
-	var enableFog = false;
+    /* create the gui control panel (the small black menu at the right side of the screren) */
+    var gui = new dat.GUI();
+    // create an AudioListener and add it to the camera
+    var listener = new THREE.AudioListener();
+    // create a global audio source
+    var sound = new THREE.Audio(listener);
+    /*  enable the default fog*/
+    var enableFog = false;
 
-    
-    if (enableFog){
-        scene.fog= new THREE.FogExp2(0xffffff, 0.2); // colour of the fog / the intensity of the fog
+
+    if (enableFog) {
+        scene.fog = new THREE.FogExp2(0xffffff, 0.2); // colour of the fog / the intensity of the fog
     }
+    /*  local-global veriables for the function init */
+    var plane = getPlane(30); /* var for the plane at the bottom of the cubes */
+    var directionalLight = getDirectionalLight(1); /* variable for the Direct. light */
+    var pointLight = getPointLight(1); /* variable for the point light */
+    var sphere = getSphere(0.05); /* variable for the sphere */
+    CubeGrid = getCubeGrid(10, 1.5); /* grid of boxes  */
+    plane.name = 'plane-1';
 
-	var plane = getPlane(30);
-	var directionalLight=getDirectionalLight(1);
-	var pointLight = getPointLight(1);
-    var sphere = getSphere(0.05);
-	 CubeGrid= getCubeGrid(10,1.5);
-	plane.name = 'plane-1';
+    var helper = new THREE.CameraHelper(directionalLight.shadow.camera); // building helper to see where the light is going
 
-	var helper = new THREE.CameraHelper(directionalLight.shadow.camera); // building helper to see where the light is going
+    plane.rotation.x = Math.PI / 2; /* position of the plane */
 
-    plane.rotation.x = Math.PI/2;
+    /* position of the lights */
     pointLight.position.y = 2;
-	pointLight.intensity=2;
-	
-	
-	directionalLight.position.set( 9.1, 2.3, 3.2 ); // position of the Direc light x,y,z values
-	directionalLight.intensity = 2;
+    pointLight.intensity = 2;
+    directionalLight.position.set(9.1, 2.3, 3.2); // position of the Direc light x,y,z values
+    directionalLight.intensity = 2;
 
- 
-	scene.add(plane);
-	pointLight.add(sphere);
-	directionalLight.add(sphere);
-	scene.add(pointLight);
-	scene.add(directionalLight);
-	scene.add(CubeGrid);
-	scene.add(listener);
-	scene.add(helper);
+    /* adding elements to the scene */
+    scene.add(plane);
+    pointLight.add(sphere);
+    directionalLight.add(sphere);
+    scene.add(pointLight);
+    scene.add(directionalLight);
+    scene.add(CubeGrid);
+    scene.add(listener);
+    scene.add(helper);
 
-	// adding into the gui controls menu at the right side of the window 
-	gui.add(pointLight, 'intensity',0 ,10); // the object I want to control and the property names 
-	//that I want to control and optionaly I can specify the min and max value of the property
-	gui.add(pointLight.position,'y',0,5);
-	
-	gui.add(directionalLight, 'intensity', 0, 10);
-	gui.add(directionalLight.position, 'x',0,20);
-	gui.add(directionalLight.position, 'y',0,20);
-	gui.add(directionalLight.position, 'z',0,20);
+    // adding into the gui controls menu at the right side of the window 
+    gui.add(pointLight, 'intensity', 0, 10); // the object I want to control and the property names 
+    //that I want to control and optionaly I can specify the min and max value of the property
+    gui.add(pointLight.position, 'y', 0, 5);
+    gui.add(directionalLight, 'intensity', 0, 10);
+    gui.add(directionalLight.position, 'x', 0, 20);
+    gui.add(directionalLight.position, 'y', 0, 20);
+    gui.add(directionalLight.position, 'z', 0, 20);
+    /* making a Perspective Camera , responsive to the windows width and height */
+    var camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        1,
+        1000
+    );
+    /* position of the camera */
+    camera.position.x = 10;
+    camera.position.y = 20;
+    camera.position.z = 15;
 
-	var camera = new THREE.PerspectiveCamera(
-		45,
-		window.innerWidth/window.innerHeight,
-		1,
-		1000
-	);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-	camera.position.x = 1;
-	camera.position.y = 2;
-	camera.position.z = 5;
-
-	camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-	var renderer = new THREE.WebGLRenderer();
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.setPixelRatio( window.devicePixelRatio ); // reducing the size of the screen for tablets or phone
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio); // reducing the size of the screen for tablets or phone
     renderer.setClearColor('rgb(120,120,120)'); // the rgb colour value
-	document.getElementById('webgl').appendChild(renderer.domElement);
-	document.getElementById('playButton'); // not working 
-    
-	var controls= new THREE.OrbitControls(camera, renderer.domElement); // orbit controls - the user to be able to exploare with the mouse 
-	
-	// load a sound and set it as the Audio object's buffer  [5] and [7]
- audioLoader = new THREE.AudioLoader();
-audioLoader.load( 'sounds/song.mp3', function( buffer ) {
-	sound.setBuffer( buffer );
-	sound.setLoop( true );
-	sound.setVolume( 0.5 );
-	sound.play();
-});
-// create an AudioAnalyser, passing in the sound and desired fftSize
- analyser = new THREE.AudioAnalyser( sound, 32 );
+    document.getElementById('webgl').appendChild(renderer.domElement);
+    document.getElementById('playButton'); // not working 
+
+    var controls = new THREE.OrbitControls(camera, renderer.domElement); // orbit controls - the user to be able to exploare with the mouse 
+
+    // load a sound and set it as the Audio object's buffer  [5] and [7]
+    audioLoader = new THREE.AudioLoader();
+    audioLoader.load('sounds/song.mp3', function(buffer) {
+        sound.setBuffer(buffer);
+        sound.setLoop(true);
+        sound.setVolume(0.5);
+        sound.play();
+    });
+    // create an AudioAnalyser, passing in the sound and desired fftSize
+    analyser = new THREE.AudioAnalyser(sound, 32);
 
 
-	update(renderer, scene, camera,controls); //calling the update function
+    update(renderer, scene, camera, controls); //calling the update function
     return scene;
 }
 
 function getCube(w, h, d) {
-	var min = 64;
-	var max = 224;
-	var geometry = new THREE.CubeGeometry(w, h, d);
-	for (var i = 0; i < geometry.faces.length; i++) {
-		var face = geometry.faces[i];
-	face.color.setHex((Math.floor(Math.random() * (max - min + 1)) + min) ); // random shades of blue or green [* 65536] // .setHex ( hex : Integer ) : Color
-		
-	  }
-	
-    var material= new THREE.MeshPhongMaterial({
-		wireframe: false, // set to false for solid block 
+    var min = 64;
+    var max = 224;
+    var geometry = new THREE.CubeGeometry(w, h, d);
+    for (var i = 0; i < geometry.faces.length; i++) {
+        var face = geometry.faces[i];
+        face.color.setHex((Math.floor(Math.random() * (max - min + 1)) + min)); // random shades of blue or green [* 65536] // .setHex ( hex : Integer ) : Color
+
+    }
+
+    var material = new THREE.MeshPhongMaterial({
+        wireframe: false, // set to false for solid block 
         vertexColors: THREE.FaceColors, // rondom colors    Inspiration [4]
-		//gui.add(face, 0xffffff,0xffd700); //I would like the user to be able to change the colours of the cubes 
-		specular: 0xdddddd,
-		shininess:10,
-		reflectivity:5.5
+        //gui.add(faceColors, 0xffffff,0xffd700); //I would like the user to be able to change the colours of the cubes 
+        specular: 0xdddddd,
+        shininess: 10,
+        reflectivity: 5.5
 
-	});
+    });
 
-	var mesh = new THREE.Mesh(
-		geometry,
-		material 
-	);
-	mesh.castShadow= true; // receiving shadow 
-	return mesh;
+    var mesh = new THREE.Mesh(
+        geometry,
+        material
+    );
+    mesh.castShadow = true; // receiving shadow 
+    return mesh;
 }
 
 function getCubeGrid(amount, separationMultiplier) {
-	var group= new THREE.Group();
+    var group = new THREE.Group();
 
-	for(var i=0; i<amount; i++){ // for loop of  boxes
-		var obj= getCube(1,1,1);
-		obj.position.x=i* separationMultiplier;  // position of the boxes
-		obj.position.y=obj.geometry.parameters.height/2;
-		group.add(obj);
-		for (var j=1; j< amount; j++){ // for loop for the number of the boxers 
-			var obj=getCube(1,1,1);
-			//obj.position = new THREE.Vector3(x, y, 0);
-			obj.position.x= i* separationMultiplier;
-			obj.position.y=obj.geometry.parameters.height/2;
-			obj.position.z= j* separationMultiplier;
-			group.add(obj);
-		}
-	}
-	group.position.x= -(separationMultiplier*(amount-1))/2;
-	group.position.z= - (separationMultiplier*(amount-1))/2;
-	return group;
+    for (var i = 0; i < amount; i++) { // for loop of  boxes
+        var obj = getCube(1, 1, 1);
+        obj.position.x = i * separationMultiplier; // position of the boxes
+        obj.position.y = obj.geometry.parameters.height / 2;
+        group.add(obj);
+        for (var j = 1; j < amount; j++) { // for loop for the number of the boxers 
+            var obj = getCube(1, 1, 1);
+            //obj.position = new THREE.Vector3(x, y, 0);
+            obj.position.x = i * separationMultiplier;
+            obj.position.y = obj.geometry.parameters.height / 2;
+            obj.position.z = j * separationMultiplier;
+            group.add(obj);
+        }
+    }
+    group.position.x = -(separationMultiplier * (amount - 1)) / 2;
+    group.position.z = -(separationMultiplier * (amount - 1)) / 2;
+    return group;
 }
-function getPlane(size) {
-	var geometry = new THREE.PlaneGeometry(size, size);
-	var material = new THREE.MeshPhongMaterial({
-		// map: new THREE.TextureLoader().load("addons/fair.jpg"),
-		color:'rgb(120,120,120)',
-	});
-	var mesh = new THREE.Mesh(
-		geometry,
-		material 
-    );
-	mesh.receiveShadow= true;
 
-	return mesh;
+function getPlane(size) {
+    var geometry = new THREE.PlaneGeometry(size, size);
+    var material = new THREE.MeshPhongMaterial({
+        // map: new THREE.TextureLoader().load("addons/fair.jpg"),
+        color: 'rgb(120,120,120)',
+    });
+    var mesh = new THREE.Mesh(
+        geometry,
+        material
+    );
+    mesh.receiveShadow = true;
+
+    return mesh;
 }
 // create a sphere with material, texture [3]
 function getSphere(size) { // readius
-	var geometry = new THREE.SphereGeometry(size, 50, 50,); // radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
-    
-    var material= new THREE.MeshLambertMaterial({
+    var geometry = new THREE.SphereGeometry(size, 50, 50, ); // radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
+
+    var material = new THREE.MeshLambertMaterial({
         map: new THREE.TextureLoader().load("addons/night.jpg"), //[2.2]
 
-        
+
     });
-	var mesh = new THREE.Mesh(
-		geometry,
-		material 
-	);
-	return mesh;
-}
-function getPointLight(intensity){
-var light= new THREE.PointLight(0xffffff, intensity); // 2 arguments-colour of the light and the intensity
-light.castShadow= true;
-return light;
+    var mesh = new THREE.Mesh(
+        geometry,
+        material
+    );
+    return mesh;
 }
 
-// function getAmbientLight(intensity){
-// 	var light= new THREE.AmbientLight(0x101030,intensity); 
-// 	scene.add(light);
-// // return light;
-// }
+function getPointLight(intensity) {
+    var light = new THREE.PointLight(0xffffff, intensity); // 2 arguments-colour of the light and the intensity
+    light.castShadow = true;
+    return light;
+}
+
 function getDirectionalLight(intensity) {
-	var light= new THREE.DirectionalLight(0xffffff, intensity );
-	 light.castShadow= true;
+    var light = new THREE.DirectionalLight(0xffffff, intensity);
+    light.castShadow = true;
 
-	light.shadow.camera.left=-	10;
-	light.shadow.camera.bottom=-10;
-	light.shadow.camera.right=  10;
-	light.shadow.camera.top=    10;
+    light.shadow.camera.left = -10;
+    light.shadow.camera.bottom = -10;
+    light.shadow.camera.right = 10;
+    light.shadow.camera.top = 10;
 
-	// light.shadow.mapSize.width=4096; //4 times the default value
-	// light.shadow.mapSize.height=4096; //4 times the default value
-	return light;
+    // light.shadow.mapSize.width=4096; //4 times the default value
+    // light.shadow.mapSize.height=4096; //4 times the default value
+    return light;
 }
 // function drawBars (array) {
 
@@ -223,7 +222,7 @@ function getDirectionalLight(intensity) {
 // if (audioLoader) {
 // 	var array = new Uint8Array(analyser.frequencyBinCount);
 // 	analyser.getByteFrequencyData(array);
-	
+
 // 	drawBars(array);
 // }
 // if (bass > 230) {
@@ -241,32 +240,69 @@ function getDirectionalLight(intensity) {
 // //cube_mesh.position.y = dy;
 // //go over each bin
 // for ( var i = 0; i < maxBinCount; i++ ){
-			  
+
 // }   
 
- function update (renderer, scene, camera, controls){ // will work with 4 arguments
-	
-	// get the average frequency of the sound (FFT)
-var data = analyser.getAverageFrequency();
-CubeGrid.scale.y = data/10;
-requestAnimationFrame(function() { //request animation frame 
-	update(renderer, scene, camera, controls);
-})
-controls.update();
-renderer.render(
-	scene,
-	camera
-);
- }
+function update(renderer, scene, camera, controls) { // will work with 4 arguments
+
+    // get the average frequency of the sound (FFT)
+    var data = analyser.getAverageFrequency();
+
+    for (var i = 0; i <= CubeGrid.children.length; i++) {
 
 
- //Load background texture [2.1]
- new THREE.TextureLoader().load('https://images.pexels.com/photos/1205301/pexels-photo-1205301.jpeg' , function(texture)
-            {
-             scene.background = texture;  
-			});
-		
-			
+        //CubeGrid.children[i].scale.y = data / i;
+
+        if (i < 10) {
+            CubeGrid.children[i].scale.y = (data / 10) / 2;
+        } else if (i < 20) {
+            CubeGrid.children[i].scale.y = data / 9;
+        }
+
+        if (i < 10) {
+            CubeGrid.children[i].scale.y = data / 3;
+        } else if (i < 20) {
+            CubeGrid.children[i].scale.y = data / 7;
+        }
+        if (i < 50) {
+            CubeGrid.children[i].scale.y = data / 4;
+        } else if (i < 60) {
+            CubeGrid.children[i].scale.y = data / i;
+        }
+        if (i < data) {
+            CubeGrid.children[i].scale.y = data / 10;
+        } else if (i < 80) {
+            CubeGrid.children[i].scale.y = data / 3;
+        }
+        if (i < 90) {
+            CubeGrid.children[i].scale.y = data / 4;
+        } else if (i < 100) {
+            CubeGrid.children[i].scale.y = data / 3;
+        }
+
+    }
+    // console.log(CubeGrid.children);
+    //debugger;
+    // CubeGrid.scale.y = data / 10;  original working code
+
+
+    requestAnimationFrame(function() { //request animation frame 
+        update(renderer, scene, camera, controls);
+    })
+    controls.update();
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+
+//including API link to Load background texture [2.1]
+new THREE.TextureLoader().load('https://images.pexels.com/photos/1205301/pexels-photo-1205301.jpeg', function(texture) {
+    scene.background = texture;
+});
+
+
 var scene = init();
 
 /* 
