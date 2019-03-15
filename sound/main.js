@@ -1,3 +1,8 @@
+/* 3D audio visualization built with three.js
+made for educational purposes by Ivelina Kosmova
+view on GitHub: https://github.com/ifka1dikova/sound
+*/
+
 // pushing using GitKraken
 var analyser, CubeGrid; //global variabals
 var audioLoader;
