@@ -33,6 +33,10 @@
 }
 #gitButton{
     color:rgb(15, 179, 157);
+    font-family: sans-serif;
+    letter-spacing: .05em;
+	  transition: all 0.4s ease;
+	  cursor: pointer;
 }
 #controlPanel {
     width: 200px;
@@ -53,10 +57,19 @@
 }
 #logo {
   text-align: right;
+  bottom: 10px;
+  right: 10px;
+	width: 100px;
+	height: 90px;
+  background: url(addons/if.svg) no-repeat center center;
+	background-size: contain;
+	opacity: .9;
+	z-index: 9999999;
+	cursor: pointer;
   font-family: 'Srisakdi', cursive;
   position:absolute;
-  top: 20pt; 
-  left: 29pt;
+  /* top: 20pt; 
+  left: 29pt; */
   color:whitesmoke;
   size: 200px;
 
@@ -81,6 +94,10 @@ a{
 }
 #upload {
     width: 180px;
+    display: inline-block;
+    background: none;
+    cursor: pointer;
+  
 }
     </style>
 </head>
@@ -89,7 +106,10 @@ a{
       <!-- the container for the visualisation  and the control panel-->
   <div id="webgl"></div>
   <div id="info">Visualisation with Three.js</div>
-  <div id="logo">    Ifka</div>
+  <a href="https://www.behance.net/ifkadikova23d3" onclick="window.open('https://www.behance.net/ifkadikova23d3')">
+    <div id="logo">Ifka</div>
+  </a>
+  <!-- <div id="logo">    Ifka</div> -->
   <div id="controlPanel">
       <a href="javascript:void(0);" id="playButton">Play DJ 89- Moonlight</a> <!-- hovering and underlying the text so the user to have the feeling that this is link to a diferent page-->
       <br>
@@ -126,5 +146,6 @@ a{
     ga('send', 'pageview');  //sending information about page views
     </script>
     <!-- End Google Analytics  Ref: https://developers.google.com/analytics/devguides/collection/analyticsjs/  -->
-</body>
+    
+  </body>
 </html>

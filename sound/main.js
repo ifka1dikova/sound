@@ -2,6 +2,108 @@
 made for educational purposes by Ivelina Kosmova
 view on GitHub: https://github.com/ifka1dikova/sound
 */
+var fileChosen = false;
+const SAMPLE_URLS = ['sounds/cosmic.mp3', 'sounds/DJ89-MOONLIGHT.mp3'];
+const SAMPLE_SUBTEXTS = ["You are listening to DJ 89 - MOONLIGHT",
+                         "You are listening to Jordan Schor - Cosmic (feat. Nathan Brumley)."];
+                         var sampleURLIndex;
+
+                         //handle different prefix of the audio context
+                         var AudioContext = AudioContext || webkitAudioContext;
+                         //create the context.
+                         var context = new AudioContext();                     
+                         function handleFiles(files) {
+                            if(files.length === 0){
+                                return;
+                            }
+                            fileChosen = true;
+                            setupAudioNodes();
+                            
+                            var fileReader  = new FileReader();
+                            fileReader.onload = function(){
+                                 var arrayBuffer = this.result;
+                                 console.log(arrayBuffer);
+                                 console.log(arrayBuffer.byteLength);
+                             };
+                             fileReader.readAsArrayBuffer(files[0]);
+                             var url = URL.createObjectURL(files[0]); 
+                            
+                            var request = new XMLHttpRequest();
+                            
+                            request.addEventListener("progress", updateProgress);
+                            request.addEventListener("load", transferComplete);
+                            request.addEventListener("error", transferFailed);
+                            request.addEventListener("abort", transferCanceled);
+                            
+                            request.open('GET', url, true);
+                            request.responseType = 'arraybuffer';
+                        
+                             // When loaded decode the data
+                            request.onload = function() {
+                                // decode the data
+                                context.decodeAudioData(request.response, function(buffer) {
+                                // when the audio is decoded play the sound
+                                sourceNode.buffer = buffer;
+                                sourceNode.start(0);
+                                //on error
+                                }, function(e) {
+                                    console.log(e);
+                                });
+                            };
+                            request.send();
+                            function playSample() {
+	
+                                fileChosen = true;
+                                setupAudioNodes();
+                                
+                                var request = new XMLHttpRequest();
+                                
+                                request.addEventListener("progress", updateProgress);
+                                request.addEventListener("load", transferComplete2);
+                                request.addEventListener("error", transferFailed);
+                                request.addEventListener("abort", transferCanceled);
+                                
+                                sampleURLIndex = getRandomInt(0,1);
+                                console.log("SAMPLE URL INDEX: " + sampleURLIndex);
+                                
+                                request.open('GET', SAMPLE_URLS[sampleURLIndex], true);
+                                request.responseType = 'arraybuffer';
+                            
+                                 // When loaded decode the data
+                                request.onload = function() {
+                                    // decode the data
+                                    context.decodeAudioData(request.response, function(buffer) {
+                                    // when the audio is decoded play the sound
+                                    sourceNode.buffer = buffer;
+                                    sourceNode.start(0);
+                                    //on error
+                                    }, function(e) {
+                                        console.log(e);
+                                    });
+                                };
+                                request.send();
+                                
+                                camera.position.z = 375;
+                                camera.position.y = 0;
+                                
+                                $(".inputfile + label, .button").addClass("animated fadeOutDown");
+                                $("#viewer_discretion").html(SAMPLE_SUBTEXTS[sampleURLIndex]);
+                            }
+                            
+                            function getRandomInt(min, max) {
+                                return Math.floor(Math.random() * (max - min + 1)) + min;
+                            }
+                        }
+
+
+
+
+
+
+
+
+
+
 
 // pushing using GitKraken
 var analyser, CubeGrid; //global variabals
