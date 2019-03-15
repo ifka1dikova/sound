@@ -44,9 +44,9 @@ function init() {
     plane.rotation.x = Math.PI / 2; /* position of the plane */
 
     /* position of the lights */
-    pointLight.position.y = 2;
+    pointLight.position.y = 20;
     pointLight.intensity = 2;
-    directionalLight.position.set(9.1, 2.3, 3.2); // position of the Direc light x,y,z values
+    directionalLight.position.set(1, 2.3, 3.2); // position of the Direc light x,y,z values
     directionalLight.intensity = 2;
 
     /* adding elements to the scene */
@@ -57,12 +57,12 @@ function init() {
     scene.add(directionalLight);
     scene.add(CubeGrid);
     scene.add(listener);
-    scene.add(helper);
+    //scene.add(helper);
 
     // adding into the gui controls menu at the right side of the window 
     gui.add(pointLight, 'intensity', 0, 10); // the object I want to control and the property names 
     //that I want to control and optionaly I can specify the min and max value of the property
-    gui.add(pointLight.position, 'y', 0, 5);
+    gui.add(pointLight.position, 'y', 0, 30);
     gui.add(directionalLight, 'intensity', 0, 10);
     gui.add(directionalLight.position, 'x', 0, 20);
     gui.add(directionalLight.position, 'y', 0, 20);
