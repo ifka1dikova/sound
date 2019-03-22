@@ -36,8 +36,12 @@ function init() {
     var directionalLight = getDirectionalLight(1); /* variable for the Direct. light */
     var pointLight = getPointLight(1); /* variable for the point light */
     var sphere = getSphere(0.05); /* variable for the sphere */
+
     CubeGrid = getCubeGrid(10, 1.5); /* grid of boxes  */
     plane.name = 'plane-1';
+
+
+
 
     var helper = new THREE.CameraHelper(directionalLight.shadow.camera); // building helper to see where the light is going
 
@@ -49,11 +53,21 @@ function init() {
     directionalLight.position.set(1, 2.3, 3.2); // position of the Direc light x,y,z values
     directionalLight.intensity = 2;
 
+
+    // pointLight2 = new THREE.PointLight(colorLight2, intensity, distance);
+    // pointLight2.add(new THREE.Mesh(dot, new THREE.MeshBasicMaterial({
+    //     color: colorLight2
+    // })));
+
+    pointLight2.add(sphere);
+    scene.add(pointLight2);
+
     /* adding elements to the scene */
     scene.add(plane);
     pointLight.add(sphere);
     directionalLight.add(sphere);
     scene.add(pointLight);
+    // scene.add(pointLight2);
     scene.add(directionalLight);
     scene.add(CubeGrid);
     scene.add(listener);
@@ -185,7 +199,7 @@ function getSphere(size) { // readius
     );
     return mesh;
 }
-
+/* user controlled  lights  */
 function getPointLight(intensity) {
     var light = new THREE.PointLight(0xffffff, intensity); // 2 arguments-colour of the light and the intensity
     light.castShadow = true;
@@ -205,6 +219,28 @@ function getDirectionalLight(intensity) {
     // light.shadow.mapSize.height=4096; //4 times the default value
     return light;
 }
+/* disco/ bass controlled lights  */
+var intensity = 200.5;
+// var distance = 100;
+var pointLight2 = getPointLight2(1);
+var colorLight2 = 0x0040ff;
+
+// var dot = new THREE.SphereGeometry(0.25, 16, 8);
+
+pointLight2.position.y = 20;
+pointLight2.position.x = 500;
+pointLight2.position.z = 10;
+var dot = new THREE.SphereGeometry(0.25, 16, 8);
+// pointLight2.intensity=2.5
+function getPointLight2(intensity) {
+    var light = new THREE.PointLight(colorLight2, intensity); // 2 arguments-colour of the light and the intensity
+    light.add(new THREE.Mesh(dot, new THREE.MeshBasicMaterial({
+        color: colorLight2
+    })));
+    // light.castShadow = true;
+    return light;
+}
+
 // function drawBars (array) {
 
 // 	//just show bins with a value over the treshold
@@ -243,7 +279,42 @@ function getDirectionalLight(intensity) {
 
 // }   
 
+/* lights analyses
+
+ 	
+var data2 = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(data2);
+
+    for (var j=0, j<= light2.intensity; i++){
+        if (j< 10){
+            light2.children[j].intensity= data2/ 10;
+        }
+    }
+
+ 	
+var data2 = analyser.getByteFrequencyData();
+   
+    for (var j=0, j<= data2.length; i++){
+       
+       
+        if (j< 10){
+            light2.children[j].intensity= data2/ 10;
+        }
+    }
+
+
+
+*/
+
 function update(renderer, scene, camera, controls) { // will work with 4 arguments
+
+
+    // var data2 = analyser.getByteFrequencyData();
+    // console.log(data2.length);
+
+
+
+
 
     // get the average frequency of the sound (FFT)
     var data = analyser.getAverageFrequency();
@@ -253,33 +324,31 @@ function update(renderer, scene, camera, controls) { // will work with 4 argumen
 
         //CubeGrid.children[i].scale.y = data / i;
 
-        if (i < 10) {
-            CubeGrid.children[i].scale.y = (data / 10) / 2;
-        } else if (i < 20) {
-            CubeGrid.children[i].scale.y = data / 9;
-        }
-
-        if (i < 10) {
-            CubeGrid.children[i].scale.y = data / 3;
-        } else if (i < 20) {
-            CubeGrid.children[i].scale.y = data / 7;
-        }
-        if (i < 50) {
-            CubeGrid.children[i].scale.y = data / 4;
-        } else if (i < 60) {
+        if (i < 11) {
+            CubeGrid.children[i].scale.y = data / 10;
+        } else if (i > 9 && i < 20) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 19 && i < 30) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 19 && i < 30) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 19 && i < 30) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 29 && i < 40) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 39 && i < 50) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 49 && i < 60) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 59 && i < 70) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 69 && i < 80) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 79 && i < 90) {
+            CubeGrid.children[i].scale.y = data / i;
+        } else if (i > 89 && i < 100) {
             CubeGrid.children[i].scale.y = data / i;
         }
-        if (i < data) {
-            CubeGrid.children[i].scale.y = data / 10;
-        } else if (i < 80) {
-            CubeGrid.children[i].scale.y = data / 3;
-        }
-        if (i < 90) {
-            CubeGrid.children[i].scale.y = data / 4;
-        } else if (i < 100) {
-            CubeGrid.children[i].scale.y = data / 3;
-        }
-
     }
     // console.log(CubeGrid.children);
     //debugger;
