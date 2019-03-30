@@ -1,15 +1,3 @@
-/* 3D audio visualization built with three.js
-made for educational purposes by Ivelina Kosmova
-view on GitHub: https://github.com/ifka1dikova/sound
-The song used for this visualisation is DJ89- MOONLIGHT (Mesechina)The author permission was taking for the purpose of this project.
-*/
-// var fileChosen = false;
-// const SAMPLE_URLS = [ 'sounds/DJ89-MOONLIGHT.mp3','sounds/song.mp3'];
-// const SAMPLE_SUBTEXTS = ["You are listening to DJ 89 - MOONLIGHT",
-//                          "You are listening to Sample"];
-//                          var sampleURLIndex;
-
-/*global variabals*/
 var analyser, CubeGrid;
 var audioLoader;
 
@@ -81,6 +69,7 @@ function init() {
     pointLight.add(sphere);
     directionalLight.add(sphere);
     scene.add(pointLight);
+    // scene.add(pointLight2);
     scene.add(directionalLight);
     scene.add(CubeGrid);
     scene.add(listener);
@@ -298,6 +287,14 @@ function update(renderer, scene, camera, controls) { // will work with 4 argumen
     pointLight2.intensity = data2[8] ;
     pointLight3.intensity = data2[4] ;
     // console.log(data2.length);
+
+
+    // var data2 = analyser.getByteFrequencyData();
+    // console.log(data2.length);
+
+
+
+
 
     // get the average frequency of the sound (FFT)
     var data = analyser.getAverageFrequency();
