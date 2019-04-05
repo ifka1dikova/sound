@@ -1,170 +1,252 @@
 <!DOCTYPE html>
-<html lang="en"> <!-- web page language-english  -->
+<html lang="en">
+<!-- web page language-english  -->
+
 <head>
-  <meta charset="UTF-8"> <!--  Character encoding for Unicode  -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--the width of the page follows the screen-width of the device-->
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">   <!-- helps Microsoft browsers to support this page -->
-  <title>Ifka's Sound visualisation</title>  <!-- title of the page  -->
-  <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Srisakdi" rel="stylesheet">
+    <meta charset="UTF-8">
+    <!--  Character encoding for Unicode  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--the width of the page follows the screen-width of the device-->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- helps Microsoft browsers to support this page -->
+    <title>Ifka's Sound visualisation</title>
+    <!-- title of the page  -->
+    <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Srisakdi" rel="stylesheet">
 
-  <!-- load  Google API fonts to show understanding of how they work and how to use different  fonts for separate  blocks of text-->
-  <style>
-         /* the body of the webpage is with specific font,backgroun colour-black with hidden overflow */  
-    html, body {
-    margin: 0;
-    padding:0;
-    font-family: arial; /*font*/
-    background:#000; /*background colour*/
-    color: #fefefe;
-    overflow: hidden; /*without overflow*/
-    height: 100%; /*percent*/
-    width: 100%; /*percent*/
-}
-/* select the element with id dropzone */  
-#dropzone{
-      padding:4px; /*pixels*/
-      /* border-style: dashed; */
-      font-size: 9pt;  /*points*/
-      width: 10%;   /*percent*/
-    }
-    /* select the element with id playButton */  
-#playButton{
-    color:rgb(219, 130, 27);
-}
-/* select the element with id gitButton. This element will be with green colour,font,specific spacing and will change the mouse appearance  when hovering on it */  
-#gitButton{
-    color:rgb(15, 179, 157);
-    font-family: sans-serif;
-    letter-spacing: .05em;
-	  transition: all 0.4s ease;
-	  cursor: pointer;
-}
-/* select the element with id controlPanel -the first few atributes sets the position of the element,the backgound colour is black*/  
-#controlPanel {
-    width: 200px; /*pixels*/
-    height: 200px; /*pixels*/
-    padding: 5px; /*pixels*/
-    position: absolute;    /*specifies the type of positioning method used for an element */  
-    top: 60px; /*pixels*/
-    left: -1px; /*pixels*/
-    box-shadow: 0 0 30px #555; /*casting shadow into the element*/
-    background-color: rgba(35, 48, 42, 0.8);/*black*/
-    transition: all 0.5s ease-in-out; /*the transition used for this element  is ease-in-out [1]*/
-
-}
-/* select the element with id info */  
-#info {
-    position: absolute;
-    top: 0;
-    height: 20px;
-}
-/* select the element with id signature */  
-#signature {
-  text-align: right; /*position of the text*/
-  font-family: 'Srisakdi', cursive; /* using the google API font loaded at the beginning  */  
-  position:absolute;/*position of the block*/
-  top: 20pt;  /*points*/
-  left: 29pt; /*points*/
-  color:whitesmoke; /*white colour*/
-  size: 200px; /*pixels*/
-}
-/* select the element with id logo */  
-#logo {
-  text-align: right; /*position of the text*/
-  bottom: 10px; /*position */
-  right: 10px;   /* of */
-	width: 200px;  /*the*/
-	height: 90px;   /*element*/
-  background: url('https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/logo.svg') no-repeat center center; /*loading personal NOSQL(MONGO DB) API with the logo that I have made for this project*/
-	background-size: contain;  /*the size of the background image- logo */
-	opacity: .9;  /*opacity */
-	z-index: 9999999;  /* specifies the stack order of an element */
-	cursor: pointer;  /*when hovering the mouse to change its appearance(to hand)*/
-  position:absolute; /*specifies the type of positioning method used for the element  */  
- 
-  
-}
-/* select the element with id action */  
-#action {
-    position: absolute;
-    right: 0;
-    width: 20px;
-    top: 0;
-    background: #111;
-    height: 130px;
-    padding-top: 80px;
-    cursor: pointer;
-}
- /* specific actions when hovering */  
-a{
-  color: greenyellow;
-}
-#action: hover {
-    color: #ddd; /* colour */
-    background: #333; /* background colour */
-}
- /* select the element with id upload */  
-#upload {
-    width: 180px;
-    display: inline-block;  /* the top and bottom margins are respected */  
-    background: none; /*no background colour */
-    cursor: pointer; /*when hovering the mouse to change its appearance(to hand)*/
-  
-}
+    <!-- load  Google API fonts to show understanding of how they work and how to use different  fonts for separate  blocks of text-->
+    <style>
+        /* the body of the webpage is with specific font,backgroun colour-black with hidden overflow */
+        
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: arial;
+            /*font*/
+            background: #000;
+            /*background colour*/
+            color: #fefefe;
+            overflow: hidden;
+            /*without overflow*/
+            height: 100%;
+            /*percent*/
+            width: 100%;
+            /*percent*/
+        }
+        /* select the element with id dropzone */
+        
+        #dropzone {
+            padding: 4px;
+            /*pixels*/
+            /* border-style: dashed; */
+            font-size: 9pt;
+            /*points*/
+            width: 10%;
+            /*percent*/
+        }
+        /* select the element with id playButton */
+        
+        #playButton {
+            color: rgb(219, 130, 27);
+        }
+        
+        #playButton2 {
+            color: rgb(219, 130, 27);
+        }
+        /* select the element with id gitButton. This element will be with green colour,font,specific spacing and will change the mouse appearance  when hovering on it */
+        
+        #gitButton {
+            color: rgb(15, 179, 157);
+            font-family: sans-serif;
+            letter-spacing: .05em;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+        /* select the element with id controlPanel -the first few atributes sets the position of the element,the backgound colour is black*/
+        
+        #controlPanel {
+            width: 200px;
+            /*pixels*/
+            height: 200px;
+            /*pixels*/
+            padding: 5px;
+            /*pixels*/
+            position: absolute;
+            /*specifies the type of positioning method used for an element */
+            top: 60px;
+            /*pixels*/
+            left: -1px;
+            /*pixels*/
+            box-shadow: 0 0 30px #555;
+            /*casting shadow into the element*/
+            background-color: rgba(35, 48, 42, 0.8);
+            /*black*/
+            transition: all 0.5s ease-in-out;
+            /*the transition used for this element  is ease-in-out [1]*/
+        }
+        /* select the element with id info */
+        
+        #info {
+            position: absolute;
+            top: 0;
+            height: 20px;
+        }
+        /* select the element with id signature */
+        
+        #signature {
+            text-align: right;
+            /*position of the text*/
+            font-family: 'Srisakdi', cursive;
+            /* using the google API font loaded at the beginning  */
+            position: absolute;
+            /*position of the block*/
+            top: 20pt;
+            /*points*/
+            left: 29pt;
+            /*points*/
+            color: whitesmoke;
+            /*white colour*/
+            size: 200px;
+            /*pixels*/
+        }
+        /* select the element with id logo */
+        
+        #logo {
+            text-align: right;
+            /*position of the text*/
+            bottom: 10px;
+            /*position */
+            right: 10px;
+            /* of */
+            width: 200px;
+            /*the*/
+            height: 90px;
+            /*element*/
+            background: url('https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/logo.svg') no-repeat center center;
+            /*loading personal NOSQL(MONGO DB) API with the logo that I have made for this project*/
+            background-size: contain;
+            /*the size of the background image- logo */
+            opacity: .9;
+            /*opacity */
+            z-index: 9999999;
+            /* specifies the stack order of an element */
+            cursor: pointer;
+            /*when hovering the mouse to change its appearance(to hand)*/
+            position: absolute;
+            /*specifies the type of positioning method used for the element  */
+        }
+        /* select the element with id action */
+        
+        #action {
+            position: absolute;
+            right: 0;
+            width: 20px;
+            top: 0;
+            background: #111;
+            height: 130px;
+            padding-top: 80px;
+            cursor: pointer;
+        }
+        /* specific actions when hovering */
+        
+        a {
+            color: greenyellow;
+        }
+        
+        #action: hover {
+            color: #ddd;
+            /* colour */
+            background: #333;
+            /* background colour */
+        }
+        /* select the element with id upload */
+        
+        #upload {
+            width: 180px;
+            display: inline-block;
+            /* the top and bottom margins are respected */
+            background: none;
+            /*no background colour */
+            cursor: pointer;
+            /*when hovering the mouse to change its appearance(to hand)*/
+        }
     </style>
 </head>
+
 <body>
-  <!-- <audio id="myAudio" src="sounds/song.mp3"></audio> -->
-      <!-- the container for the visualisation  and the control panel-->
-  <div id="webgl"></div> <!-- element webgl is here [this is where the threejs is]-->
-  <div id="info">Visualisation with Three.js</div>
-  <div id="signature">Ifka</div> <!-- the signature element is here -->
-  <a href="https://www.behance.net/ifkadikova23d3" onclick="window.open('https://www.behance.net/ifkadikova23d3')">
-    <div id="logo">
-    </div>
-  </a>
-  <!-- this is the element of my logo(my personal mongoDB API link ), when clicked it will go to my behance account-->
-  <div id="controlPanel"><!-- control panel element-->
-      <a href="javascript:void(0);" id="playButton">Play DJ 89- Moonlight</a> <!-- hovering and underlying the text so the user to have the feeling that this is link to a diferent page-->
-      <br>
-      <a href="javascript:void(0);" id="playButton">Play Sample</a> <!-- You may ocassionally encounter an HTML document that uses href="JavaScript:Void(0);" within an <a> element. JavaScript void is often used when, inserting an expression into a web page may produce an unwanted side-effect.  -->
-      <p id="dropzone text-center">or upload a file</p> <!-- dropzone element -->
-      <input type="file" id="upload" /> <!-- dropzone elementinputing file into the scene -->
-      <p>or drag and drop a file to play</p>
-      <a href="https://github.com/ifka1dikova/sound"  id="gitButton">GitHub  </a> <!-- when clicked on the GitHub button(element) will go the the gitHub code of this project -->
-  <script  language="javascript" type="text/javascript" src="addons/p5.min.js"></script> <!-- loading JS library p5 -->
-    <!-- <script language="javascript" type="text/javascript"  src="addons/p5.dom.min.js"></script>
-    <script language="javascript" type="text/javascript"  src="addons/p5.sound.min.js"></script> -->
-    <script language="javascript" type="text/javascript" src="addons/dat.gui.min.js"></script>  <!-- loading JS library dat.gui -->
-    <script language="javascript" type="text/javascript" src="addons/three.js"></script>  <!-- loading JS library three.js -->
-    <script language="javascript" type="text/javascript" src="addons/TrackballControls.js"></script> <!-- loading JS library -for the rotation of the planet -->
-    
-  
-   <!-- <script language="javascript" type="text/javascript" src="addons/ObjectLoader.js"></script> -->
-   <script language="javascript" type="text/javascript" src="addons/OrbitControls.js"></script>  <!-- loading JS library for the rotation of the scene -->
-   <!-- <script language="javascript" type="text/javascript" src="addons/JSONLoader.js"></script> -->
-    <!--<script language="javascript" type="text/javascript" src="addons/three.min.js"></script>-->
-    <!-- <script language="javascript" type="text/javascript" src="addons/three.module.js"></script> -->
+    <!-- <audio id="myAudio" src="sounds/song.mp3"></audio> -->
+    <!-- the container for the visualisation  and the control panel-->
+    <div id="webgl"></div>
+    <!-- element webgl is here [this is where the threejs is]-->
+    <div id="info">Visualisation with Three.js</div>
+    <div id="signature">Ifka</div>
+    <!-- the signature element is here -->
+    <a href="https://www.behance.net/ifkadikova23d3" onclick="window.open('https://www.behance.net/ifkadikova23d3')">
+        <div id="logo">
+        </div>
+    </a>
+    <!-- this is the element of my logo(my personal mongoDB API link ), when clicked it will go to my behance account-->
+    <div id="controlPanel">
+        <!-- control panel element-->
+        <a href="javascript:void(0);" id="playButton">Play DJ 89- Moonlight</a>
+        <!-- hovering and underlying the text so the user to have the feeling that this is link to a diferent page-->
+        <br>
+        <a href="javascript:void(0);" id="playButton2">Play Sample</a>
+        <!-- You may ocassionally encounter an HTML document that uses href="JavaScript:Void(0);" within an <a> element. JavaScript void is often used when, inserting an expression into a web page may produce an unwanted side-effect.  -->
+        <p id="dropzone text-center">or upload a file</p>
+        <!-- dropzone element -->
+        <input type="file" id="upload" />
+        <!-- dropzone elementinputing file into the scene -->
+        <p>or drag and drop a file to play</p>
+        <a href="https://github.com/ifka1dikova/sound" id="gitButton">GitHub  </a>
+        <!-- when clicked on the GitHub button(element) will go the the gitHub code of this project -->
+        <script language="javascript" type="text/javascript" src="addons/p5.min.js"></script>
+        <!-- loading JS library p5 -->
+        <script language="javascript" type="text/javascript" src="addons/p5.dom.min.js"></script>
+        <script language="javascript" type="text/javascript" src="addons/p5.sound.min.js"></script>
+        <script language="javascript" type="text/javascript" src="addons/dat.gui.min.js"></script>
+        <!-- loading JS library dat.gui -->
+        <script language="javascript" type="text/javascript" src="addons/three.js"></script>
+        <!-- loading JS library three.js -->
+        <script language="javascript" type="text/javascript" src="addons/TrackballControls.js"></script>
+        <!-- loading JS library -for the rotation of the planet -->
 
 
-  <script src="main.js"></script>  <!-- loading mine JS file  -->
+        <!-- <script language="javascript" type="text/javascript" src="addons/ObjectLoader.js"></script> -->
+        <script language="javascript" type="text/javascript" src="addons/OrbitControls.js"></script>
+        <!-- loading JS library for the rotation of the scene -->
+        <!-- <script language="javascript" type="text/javascript" src="addons/JSONLoader.js"></script> -->
+        <!--<script language="javascript" type="text/javascript" src="addons/three.min.js"></script>-->
+        <!-- <script language="javascript" type="text/javascript" src="addons/three.module.js"></script> -->
 
-  <!-- Google Analytics API for tracking how users interact with my website-->
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-    
-    ga('create', 'UA-136358408-1', 'auto'); // personal tracking ID 
-    ga('send', 'pageview');  //sending information about page views
-    </script>
-    <!-- End Google Analytics [3]  -->
-    
-  </body>
+
+        <script src="main.js"></script>
+        <!-- loading mine JS file  -->
+
+        <!-- Google Analytics API for tracking how users interact with my website-->
+        <script>
+            (function(i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function() {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-136358408-1', 'auto'); // personal tracking ID 
+            ga('send', 'pageview'); //sending information about page views
+        </script>
+        <!-- End Google Analytics [3]  -->
+
+</body>
+
 </html>
- <!-- references: 
+<!-- references: 
 [1]  built-in CSS timing functions: https://css-tricks.com/ease-out-in-ease-in-out/
 [2] box-shadow : https://css-tricks.com/almanac/properties/b/box-shadow/  
 [3]  Google Analytics: https://developers.google.com/analytics/devguides/collection/analyticsjs/ -->

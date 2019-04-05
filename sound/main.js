@@ -1,5 +1,12 @@
 var analyser, CubeGrid;
 var audioLoader;
+var input, button, button2;
+var uploadAudio;
+var sound, sound2, audio;
+var soundInPut;
+var uploadAudio = false;
+
+
 
 
 function setup() {
@@ -8,11 +15,72 @@ function setup() {
     //drag and drop function [6]
     canvas.drop(gotFile);
 
+    input = createInput();
+    input.position('#upload');
+
+    button = select('#playButton');
+    button.mousePressed(buttonPressed);
+
+    button2 = select('#playButton2');
+    button2.mousePressed(buttonPressed2);
+
+
 }
+
+function uploaded(file) {
+    uploadLoading = true;
+    uploadedAudio = loadSound(file.data, uploadedAudioPlay);
+}
+
+function uploadedAudioPlay(audioFile) {
+
+    uploadLoading = false;
+
+    if (sound.isPlaying()) {
+        sound.pause();
+    }
+    sound2.play();
+    sound2 = audioFile;
+    sound2.loop();
+    // console.log("button pressed", sound2);
+}
+
+function buttonPressed() {
+
+    console.log("button pressed", sound);
+
+    if (soundInPut.isPlaying) {
+        soundInPut.stop();
+
+    }
+    //soundInPut.stop();
+
+
+    sound.play();
+    analyser = new THREE.AudioAnalyser(sound, 32);
+}
+
+function buttonPressed2() {
+    // sound.stop();
+
+    if (sound.isPlaying) {
+        sound.stop();
+
+    }
+    soundInPut.play();
+    analyser = new THREE.AudioAnalyser(soundInPut, 32);
+
+    console.log("button pressed", soundInPut);
+}
+
+
 
 function gotFile(file) {
     createP(file.name + " " + file.size);
 }
+
+
+
 
 function init() {
     /* create  a scene */
@@ -22,7 +90,8 @@ function init() {
     // create an AudioListener and add it to the camera
     var listener = new THREE.AudioListener();
     // create a global audio source
-    var sound = new THREE.Audio(listener);
+    sound = new THREE.Audio(listener);
+    soundInPut = new THREE.Audio(listener);
     /*  enable the default fog*/
     var enableFog = false;
 
@@ -34,9 +103,9 @@ function init() {
     var plane = getPlane(30); /* var for the plane at the bottom of the cubes */
     var directionalLight = getDirectionalLight(1); /* variable for the Direct. light */
     var pointLight = getPointLight(1); /* variable for the point light */
-    var sphere = getSphere(0.05); /* variable for the sphere */
-    var sphere2=getSphere2(0.05);
-    var sphere3=getSphere2(0.05);
+    var sphere = getSphere(0.05); /* variable for the spheres */
+    var sphere2 = getSphere2(0.05);
+    var sphere3 = getSphere2(0.05);
 
     CubeGrid = getCubeGrid(10, 1.5); /* grid of boxes  */
     plane.name = 'plane-1';
@@ -56,7 +125,7 @@ function init() {
 
     pointLight3.position.x = -30;
     pointLight3.position.z = -60;
- 
+
 
     pointLight2.add(sphere2);
     scene.add(pointLight2);
@@ -104,53 +173,78 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio); // reducing the size of the screen for tablets or phones
     renderer.setClearColor('rgb(120,120,120)'); // the rgb colour value
-    document.getElementById('webgl').appendChild(renderer.domElement);// the location of the scene is in the 'webgl' location into the HTML file
+    document.getElementById('webgl').appendChild(renderer.domElement); // the location of the scene is in the 'webgl' location into the HTML file
     document.getElementById('playButton'); // not working 
 
     var controls = new THREE.OrbitControls(camera, renderer.domElement); // orbit controls - the user to be able to exploare with the mouse 
 
     // load a sound and set it as the Audio object's buffer  [5] and [7]
     audioLoader = new THREE.AudioLoader();
+
     audioLoader.load('sounds/DJ89-MOONLIGHT.mp3', function(buffer) {
         // my personal database in the MongoDB stitch hosting 
-// another link to the song https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/DJ89-MOONLIGHT.mp3
-//another song https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/song.mp3
-// audioLoader.load('https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/song.mp3', function(buffer) {
+        // another link to the song https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/DJ89-MOONLIGHT.mp3
+        //another song https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/song.mp3
+        // audioLoader.load('https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/song.mp3', function(buffer) {
 
         sound.setBuffer(buffer);
         sound.setLoop(true);
         sound.setVolume(0.5);
-        sound.play();
+        console.log("moonlight loaded");
+
     });
+
+
+
+    audioLoader2 = new THREE.AudioLoader();
+
+    audioLoader2.load('sounds/song.mp3', function(buffer) {
+        // mloading the other sound file from the user input
+
+        soundInPut.setBuffer(buffer);
+        soundInPut.setLoop(true);
+        soundInPut.setVolume(0.5);
+        // soundInPut.hasPlaybackControl(false);
+        // soundInPut.play(buttonPressed);
+
+        console.log("song loaded");
+
+    });
+
+
+
+
     // create an AudioAnalyser, passing in the sound and desired fftSize
     analyser = new THREE.AudioAnalyser(sound, 32);
+    // analyser = new THREE.AudioAnalyser(soundInPut, 32);
 
 
     update(renderer, scene, camera, controls); //calling the update function
     return scene;
 }
+
 /* creating a cube with width ,height and deep h */
 function getCube(w, h, d) {
     var min = 64; /* local variables for min & max values*/
     var max = 224;
     var geometry = new THREE.CubeGeometry(w, h, d);
     for (var i = 0; i < geometry.faces.length; i++) { /* spliting the cube into diferent faces with a forloop */
-        var face = geometry.faces[i];                  
+        var face = geometry.faces[i];
         face.color.setHex((Math.floor(Math.random() * (max - min + 1)) + min)); //the colour of each face of the cube is a random shade of blue {or green [* 65536]} // .setHex ( hex : Integer ) : Color
 
     }
-/* creating the cube's material */
+    /* creating the cube's material */
     var material = new THREE.MeshPhongMaterial({ //[12]
         wireframe: false, // set to false for solid block 
         vertexColors: THREE.FaceColors, // rondom colors    Inspiration [4]
         //gui.add(faceColors, 0xffffff,0xffd700); //I would like the user to be able to change the colours of the cubes 
         specular: 0xdddddd, // how much the specular surface highlight contributes and how much of the environment map affects the surface. Default is null. !Only for Phong material
-        shininess: 10,    // how much will shine
+        shininess: 10, // how much will shine
         reflectivity: 5 // how much will be reflective
-       
+
 
     });
-/* setting the cube's mesh *Nothing interesting here */
+    /* setting the cube's mesh *Nothing interesting here */
     var mesh = new THREE.Mesh(
         geometry,
         material
@@ -166,7 +260,7 @@ function getCubeGrid(amount, separationMultiplier) {
         var obj = getCube(1, 1, 1);
         obj.position.x = i * separationMultiplier; // position of the boxes= number of the multiplyed box x and multiplies the environment map color with the surface color. 
         obj.position.y = obj.geometry.parameters.height / 2;
-        group.add(obj);   // adding the group of 10 boxes he scene
+        group.add(obj); // adding the group of 10 boxes he scene
 
         for (var j = 1; j < amount; j++) { // for loop for the number of the boxers 
             var obj = getCube(1, 1, 1);
@@ -214,7 +308,7 @@ function getSphere(size) { // radius
 }
 
 function getSphere2() { // radius
-    var geometry = new THREE.SphereBufferGeometry( 0.25, 16, 8); //  ref [16] radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
+    var geometry = new THREE.SphereBufferGeometry(0.25, 16, 8); //  ref [16] radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
     var material = new THREE.MeshBasicMaterial({ // the basic cyrcle
         // color: 0xffff00
     });
@@ -226,7 +320,7 @@ function getSphere2() { // radius
 }
 
 function getSphere3() { // radius
-    var geometry = new THREE.SphereBufferGeometry( 0.25, 16, 8); //  ref [16] radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
+    var geometry = new THREE.SphereBufferGeometry(0.25, 16, 8); //  ref [16] radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
     var material = new THREE.MeshBasicMaterial({ // the basic cyrcle
         // color: 0xffff00
     });
@@ -236,7 +330,7 @@ function getSphere3() { // radius
     );
     return mesh;
 }
-       /* LIGHTS  */
+/* LIGHTS  */
 /* user controlled  LIGHTS  */
 function getPointLight(intensity) {
     var light = new THREE.PointLight(0xffffff, intensity); // 2 arguments-colour of the light and the intensity
@@ -247,7 +341,7 @@ function getPointLight(intensity) {
 function getDirectionalLight(intensity) {
     var light = new THREE.DirectionalLight(0xffffff, intensity);
     light.castShadow = true; // enable the shadow casting on a light
-// seting up an orthographic camera when  casting shadow with a Directional Light (see ref. 14)
+    // seting up an orthographic camera when  casting shadow with a Directional Light (see ref. 14)
     light.shadow.camera.left = -10;
     light.shadow.camera.bottom = -10;
     light.shadow.camera.right = 10;
@@ -263,17 +357,18 @@ var distance = 100; // Maximum range of the light
 var pointLight2 = getPointLight2(1);
 var pointLight3 = getPointLight3(1);
 // var colorLight2 = 0xffd700; // colour 0xffd700  0xff0000
-var decay=2.0;//The amount the light dims along the distance of the light
+var decay = 2.0; //The amount the light dims along the distance of the light
 
 
 function getPointLight2(intensity) {
-    var light = new THREE.PointLight(0xff0000, intensity,distance, decay); //( color : Integer, intensity : Float, distance : Number, decay : Float
+    var light = new THREE.PointLight(0xff0000, intensity, distance, decay); //( color : Integer, intensity : Float, distance : Number, decay : Float
     return light;
-    
-    
+
+
 }
+
 function getPointLight3(intensity) {
-    var light = new THREE.PointLight(0xffd700, intensity,distance, decay); //( color : Integer, intensity : Float, distance : Number, decay : Float
+    var light = new THREE.PointLight(0xffd700, intensity, distance, decay); //( color : Integer, intensity : Float, distance : Number, decay : Float
     return light;
 }
 pointLight2.intensity = 10;
@@ -282,17 +377,15 @@ pointLight3.intensity = 8;
 
 
 function update(renderer, scene, camera, controls) { // will work with 4 arguments
-/* lights analyses */
+    /* lights analyses */
     var data2 = analyser.getFrequencyData();
-    pointLight2.intensity = data2[8] ;
-    pointLight3.intensity = data2[4] ;
+    pointLight2.intensity = data2[8];
+    pointLight3.intensity = data2[4];
     // console.log(data2.length);
 
 
     // var data2 = analyser.getByteFrequencyData();
     // console.log(data2.length);
-
-
 
 
 
