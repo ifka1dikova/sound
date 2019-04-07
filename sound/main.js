@@ -1,12 +1,29 @@
 var analyser, CubeGrid;
 var audioLoader;
 var input, button, button2;
-var uploadAudio;
-var sound, sound2, audio;
+// var uploadAudio;
+var sound, soundByUser, audio;
 var soundInPut;
-var uploadAudio = false;
+// var uploadLoading = false;
 
+function uploaded(file) {
+    // uploadLoading = true;
+    soundByUser = loadSound(file.data, soundByUserPlay);
+}
 
+function soundByUserPlay(audioFile) {
+
+    // uploadLoading = false;
+
+    if (sound.isPlaying()) {
+        sound.pause();
+    }
+  
+    soundByUser = audioFile;
+    soundByUser.play();
+    soundByUser.loop();
+    // console.log("button pressed", soundByUser);
+}
 
 
 function setup() {
@@ -15,8 +32,9 @@ function setup() {
     //drag and drop function [6]
     canvas.drop(gotFile);
 
-    input = createInput();
-    input.position('#upload');
+    input = createFileInput(uploaded);
+    // input.position('#upload');
+    input.addClass('#upload');
 
     button = select('#playButton');
     button.mousePressed(buttonPressed);
@@ -27,24 +45,7 @@ function setup() {
 
 }
 
-function uploaded(file) {
-    uploadLoading = true;
-    uploadedAudio = loadSound(file.data, uploadedAudioPlay);
-}
-
-function uploadedAudioPlay(audioFile) {
-
-    uploadLoading = false;
-
-    if (sound.isPlaying()) {
-        sound.pause();
-    }
-    sound2.play();
-    sound2 = audioFile;
-    sound2.loop();
-    // console.log("button pressed", sound2);
-}
-
+ /* function if the button is pressed and the song is playing to stop playing and to start the other song from the playlist */
 function buttonPressed() {
 
     console.log("button pressed", sound);
@@ -57,9 +58,9 @@ function buttonPressed() {
 
 
     sound.play();
-    analyser = new THREE.AudioAnalyser(sound, 32);
+    analyser = new THREE.AudioAnalyser(sound, 32);  /* use the audio visualizer to visualize this song  */
 }
-
+ /* function if the button is pressed and the song is playing to stop playing and to start the other song from the playlist */
 function buttonPressed2() {
     // sound.stop();
 
@@ -68,7 +69,7 @@ function buttonPressed2() {
 
     }
     soundInPut.play();
-    analyser = new THREE.AudioAnalyser(soundInPut, 32);
+    analyser = new THREE.AudioAnalyser(soundInPut, 32); /* use the audio visualizer to visualize this song  */
 
     console.log("button pressed", soundInPut);
 }
