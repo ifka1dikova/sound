@@ -1,3 +1,10 @@
+/* 3D audio visualization built with three.js
+made for educational purposes by Ivelina Kosmova
+view on GitHub: https://github.com/ifka1dikova/sound
+The song used for this visualisation is DJ89- MOONLIGHT (Mesechina)The author permission was taking for the purpose of this project.
+*/
+
+/* Global variables  */
 var analyser, CubeGrid;
 var audioLoader;
 var input, button, button2;
@@ -5,18 +12,18 @@ var input, button, button2;
 var sound, soundByUser, audio;
 var soundInPut;
 // var uploadLoading = false;
-
+ // uploading the file into the page and load the sound from the file
 function uploaded(file) {
     // uploadLoading = true;
-    soundByUser = loadSound(file.data, soundByUserPlay);
+    soundByUser = loadSound(file.data, soundByUserPlay); 
 }
-
+ // function for playing the sound from the user input 
 function soundByUserPlay(audioFile) {
 
     // uploadLoading = false;
-
+ // if statement : if another song is playing stop it first and then play the inputed audio file
     if (sound.isPlaying()) {
-        sound.pause();
+        sound.stop();
     }
   
     soundByUser = audioFile;
@@ -35,10 +42,10 @@ function setup() {
     input = createFileInput(uploaded);
     // input.position('#upload');
     input.addClass('#upload');
-
+// connecting the CSS play button  with the file and setting the instruction when the button is pressed to play the  selected song
     button = select('#playButton');
     button.mousePressed(buttonPressed);
-
+// connecting the CSS play button  with the file and setting the instruction when the button is pressed to play the selected song
     button2 = select('#playButton2');
     button2.mousePressed(buttonPressed2);
 
@@ -49,7 +56,7 @@ function setup() {
 function buttonPressed() {
 
     console.log("button pressed", sound);
-
+ // if statement: if the other song is playing stop it first and then play the other one and then analyse it
     if (soundInPut.isPlaying) {
         soundInPut.stop();
 
@@ -62,8 +69,8 @@ function buttonPressed() {
 }
  /* function if the button is pressed and the song is playing to stop playing and to start the other song from the playlist */
 function buttonPressed2() {
-    // sound.stop();
-
+   
+ // if statement: if the other song is playing stop it first and then play the other one and then analyse it
     if (sound.isPlaying) {
         sound.stop();
 
@@ -71,7 +78,7 @@ function buttonPressed2() {
     soundInPut.play();
     analyser = new THREE.AudioAnalyser(soundInPut, 32); /* use the audio visualizer to visualize this song  */
 
-    console.log("button pressed", soundInPut);
+    console.log("button pressed", soundInPut); //console logging to see if the button is working
 }
 
 
@@ -79,9 +86,6 @@ function buttonPressed2() {
 function gotFile(file) {
     createP(file.name + " " + file.size);
 }
-
-
-
 
 function init() {
     /* create  a scene */
@@ -108,14 +112,14 @@ function init() {
     var sphere2 = getSphere2(0.05);
     var sphere3 = getSphere2(0.05);
 
-    CubeGrid = getCubeGrid(10, 1.5); /* grid of boxes  */
+    CubeGrid = getCubeGrid(10, 1.5); /* grid of boxes / with the amount 10 with separation value between each one 1.5 */
     plane.name = 'plane-1';
 
     var helper = new THREE.CameraHelper(directionalLight.shadow.camera); // building helper to see where the Direct light is going !! it will be removed from the scene when not needed
 
     plane.rotation.x = Math.PI / 2; /* position of the plane */
 
-    /* position of the lights */
+    /* position of the lights x,y and z values */
     pointLight.position.y = 20;
     pointLight.intensity = 2;
     directionalLight.position.set(1, 2.3, 3.2); // position of the Direc light is set x,y,z values
@@ -127,7 +131,7 @@ function init() {
     pointLight3.position.x = -30;
     pointLight3.position.z = -60;
 
-
+ /* adding the lights inside the spheres and into the scene */
     pointLight2.add(sphere2);
     scene.add(pointLight2);
 
@@ -173,7 +177,7 @@ function init() {
     var renderer = new THREE.WebGLRenderer(); // rendering the scene with WebGl
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio); // reducing the size of the screen for tablets or phones
-    renderer.setClearColor('rgb(120,120,120)'); // the rgb colour value
+    renderer.setClearColor('rgb(120,120,120)'); // setting the colour when rendering to "clear"/ the rgb colour value
     document.getElementById('webgl').appendChild(renderer.domElement); // the location of the scene is in the 'webgl' location into the HTML file
     document.getElementById('playButton'); // not working 
 
@@ -183,11 +187,7 @@ function init() {
     audioLoader = new THREE.AudioLoader();
 
     audioLoader.load('sounds/DJ89-MOONLIGHT.mp3', function(buffer) {
-        // my personal database in the MongoDB stitch hosting 
-        // another link to the song https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/DJ89-MOONLIGHT.mp3
-        //another song https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/song.mp3
-        // audioLoader.load('https://stitch-statichosting-prod.s3.amazonaws.com/5c94b290b410ce52abd2ed6d/song.mp3', function(buffer) {
-
+        
         sound.setBuffer(buffer);
         sound.setLoop(true);
         sound.setVolume(0.5);
@@ -196,29 +196,22 @@ function init() {
     });
 
 
-
+// loading the audio into the ThreeJS scene
     audioLoader2 = new THREE.AudioLoader();
 
     audioLoader2.load('sounds/song.mp3', function(buffer) {
-        // mloading the other sound file from the user input
+        // loading the other sound file from playlist
 
-        soundInPut.setBuffer(buffer);
-        soundInPut.setLoop(true);
-        soundInPut.setVolume(0.5);
-        // soundInPut.hasPlaybackControl(false);
-        // soundInPut.play(buttonPressed);
-
-        console.log("song loaded");
+        soundInPut.setBuffer(buffer);  // buffering the sound
+        soundInPut.setLoop(true);  // repeat
+        soundInPut.setVolume(0.5); // set volume
+     
+        console.log("song loaded"); // console loggin if the sound is loaded
 
     });
 
-
-
-
     // create an AudioAnalyser, passing in the sound and desired fftSize
     analyser = new THREE.AudioAnalyser(sound, 32);
-    // analyser = new THREE.AudioAnalyser(soundInPut, 32);
-
 
     update(renderer, scene, camera, controls); //calling the update function
     return scene;
@@ -243,7 +236,6 @@ function getCube(w, h, d) {
         shininess: 10, // how much will shine
         reflectivity: 5 // how much will be reflective
 
-
     });
     /* setting the cube's mesh *Nothing interesting here */
     var mesh = new THREE.Mesh(
@@ -253,15 +245,15 @@ function getCube(w, h, d) {
     mesh.castShadow = true; // receiving shadow 
     return mesh;
 }
-/* creating a grid of cubes with a function */
+/* creating a grid of cubes with a function with THREE group method and separation between the different objects */
 function getCubeGrid(amount, separationMultiplier) {
-    var group = new THREE.Group(); /* using THREE group method */
+    var group = new THREE.Group(); /* using THREE group method- non-geometric object,used to organize other geometry objects together */
 
     for (var i = 0; i < amount; i++) { // for loop of  boxes
         var obj = getCube(1, 1, 1);
         obj.position.x = i * separationMultiplier; // position of the boxes= number of the multiplyed box x and multiplies the environment map color with the surface color. 
-        obj.position.y = obj.geometry.parameters.height / 2;
-        group.add(obj); // adding the group of 10 boxes he scene
+        obj.position.y = obj.geometry.parameters.height / 2; // setting the y position of the boxes and their height
+        group.add(obj); // adding the group of 10 boxes to the scene
 
         for (var j = 1; j < amount; j++) { // for loop for the number of the boxers 
             var obj = getCube(1, 1, 1);
@@ -269,10 +261,10 @@ function getCubeGrid(amount, separationMultiplier) {
             obj.position.x = i * separationMultiplier;
             obj.position.y = obj.geometry.parameters.height / 2;
             obj.position.z = j * separationMultiplier; // multiplying the cubes  
-            group.add(obj);
+            group.add(obj); // adding the group of 10 boxes to the scene
         }
     }
-    group.position.x = -(separationMultiplier * (amount - 1)) / 2;
+    group.position.x = -(separationMultiplier * (amount - 1)) / 2;  // make the position only with 2 line of code. just ajasting the position of the group object for the x and z value
     group.position.z = -(separationMultiplier * (amount - 1)) / 2;
     return group;
 }
@@ -310,8 +302,8 @@ function getSphere(size) { // radius
 
 function getSphere2() { // radius
     var geometry = new THREE.SphereBufferGeometry(0.25, 16, 8); //  ref [16] radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
-    var material = new THREE.MeshBasicMaterial({ // the basic cyrcle
-        // color: 0xffff00
+    var material = new THREE.MeshBasicMaterial({ // the basic circle
+     
     });
     var mesh = new THREE.Mesh(
         geometry,
@@ -323,7 +315,7 @@ function getSphere2() { // radius
 function getSphere3() { // radius
     var geometry = new THREE.SphereBufferGeometry(0.25, 16, 8); //  ref [16] radius :(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
     var material = new THREE.MeshBasicMaterial({ // the basic cyrcle
-        // color: 0xffff00
+
     });
     var mesh = new THREE.Mesh(
         geometry,
@@ -347,9 +339,6 @@ function getDirectionalLight(intensity) {
     light.shadow.camera.bottom = -10;
     light.shadow.camera.right = 10;
     light.shadow.camera.top = 10;
-
-    // light.shadow.mapSize.width=4096; //4 times the default value
-    // light.shadow.mapSize.height=4096; //4 times the default value
     return light;
 }
 /* disco/ bass controlled lights  [15]*/
@@ -357,47 +346,37 @@ var intensity = 200.5; //light's strength/intensity.
 var distance = 100; // Maximum range of the light
 var pointLight2 = getPointLight2(1);
 var pointLight3 = getPointLight3(1);
-// var colorLight2 = 0xffd700; // colour 0xffd700  0xff0000
-var decay = 2.0; //The amount the light dims along the distance of the light
+var decay = 2.0; //The amount of the light dims along the distance of the light
 
-
+//Creating the bass-lights with these parameters and their positions
 function getPointLight2(intensity) {
     var light = new THREE.PointLight(0xff0000, intensity, distance, decay); //( color : Integer, intensity : Float, distance : Number, decay : Float
     return light;
-
-
 }
-
 function getPointLight3(intensity) {
     var light = new THREE.PointLight(0xffd700, intensity, distance, decay); //( color : Integer, intensity : Float, distance : Number, decay : Float
     return light;
 }
+//positions of the bass-lights
 pointLight2.intensity = 10;
 pointLight3.intensity = 8;
 
 
 
-function update(renderer, scene, camera, controls) { // will work with 4 arguments
+function update(renderer, scene, camera, controls) { // the update fuction update the scene and these parameters that are in the brackets //will work with 4 arguments
     /* lights analyses */
     var data2 = analyser.getFrequencyData();
     pointLight2.intensity = data2[8];
     pointLight3.intensity = data2[4];
-    // console.log(data2.length);
-
-
-    // var data2 = analyser.getByteFrequencyData();
-    // console.log(data2.length);
 
 
 
     // get the average frequency of the sound (FFT)
     var data = analyser.getAverageFrequency();
-
+// creating for loop for the lenght of the cubes that will respond to the FFT analyses 
     for (var i = 0; i <= CubeGrid.children.length; i++) {
 
-
-        //CubeGrid.children[i].scale.y = data / i;
-
+// if statement that will visualise the cubes with a different lenght ( 10 rows of cubes x 10 cubes per row so from 1 to 100)
         if (i < 11) {
             CubeGrid.children[i].scale.y = data / 10;
         } else if (i > 9 && i < 20) {
@@ -425,12 +404,9 @@ function update(renderer, scene, camera, controls) { // will work with 4 argumen
         }
 
     }
-    // console.log(CubeGrid.children);
-    // CubeGrid.scale.y = data / 10;  original working code
-
 
     requestAnimationFrame(function() { //request animation frame 
-        update(renderer, scene, camera, controls);
+        update(renderer, scene, camera, controls); //update the animation and these values:
     })
     controls.update();
     renderer.render(
@@ -446,7 +422,7 @@ new THREE.TextureLoader().load('https://images.pexels.com/photos/1205301/pexels-
 });
 
 
-var scene = init();
+var scene = init(); // calling the init function
 
 /* 
 References(code/texture and inspirations):
@@ -483,6 +459,7 @@ points in which we start (or end) calculating those vertices.
 [14] http://learningthreejs.com/blog/2012/01/20/casting-shadows/ 
 [15] https://threejs.org/docs/#api/en/lights/PointLight 
 [16] https://threejs.org/docs/#api/en/geometries/SphereBufferGeometry
+[17] The begining of this porject was posssible thanks to the lynda.com tutorials by Engin Arsian:Learning 3D Graphics on the Web with Three.js //https://www.lynda.com/JavaScript-tutorials/Learning-3D-Graphics-Web-Three-js/586668-2.html 
 
 
 
